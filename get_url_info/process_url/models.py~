@@ -1,0 +1,10 @@
+from django.db import models
+from scrapy_djangoitem import DjangoItem
+
+# Create your models here.
+
+class siteData(models.Model):
+	url = models.CharField(max_length=255)
+
+class urlModel(DjangoItem):
+	django_model = siteData

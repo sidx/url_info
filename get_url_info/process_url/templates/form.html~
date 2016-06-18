@@ -1,0 +1,46 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Url Form</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script>
+			var site = '{{ request.META.HTTP_HOST }}';
+			$(function() { 
+				$('#urlForm').on('submit', function(e){
+					e.preventDefault();
+					var url = "http://"+site+'/getUrlData';
+					var data = $('#urlForm').serialize();
+					console.log(url);
+					$.ajax({
+					  type: "POST",
+					  url: url,
+					  data: data
+					}).done(function(data){
+						console.log(data.url);
+						$('#url').html(data.url);
+						$('#original').html(data.originalUrl);
+						$('#title').html(data.title);
+						var imageList = '';
+						for(var i=0,maxlen=data.imgList.length;i<maxlen;i++){
+							imageList = imageList + '<li><a href="'+data.imgList[i]+'">'+i.toString()+'</a></li>';
+						}
+						$('#images').html(imageList);
+					}).fail(function(data){
+						console.log(data);
+					});
+				});
+			});
+		</script>
+	</head>
+    <form id='urlForm'>
+    	<input type="text" name="url" value="" placeholder="Enter A url" id="url" />
+    	{% csrf_token %}
+    	<input type="submit" name="submit" value="submit" placeholder="" id="submit" />
+    </form>
+    <div id='details'>
+		<p id='url'></p>
+		<p id='original'></p>
+		<p id='title'></p>
+		<ul id='images'></ul>
+    </div>
+</html>
