@@ -15,7 +15,6 @@ def getUrlData(request):
 	return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 def printUrlData(data):
-	print 'here'
 	return render_to_response('urlDetails.html', data)
 
 def getSiteData(url):
@@ -33,13 +32,20 @@ def getSiteData(url):
 	siteData = urllib2.urlopen(parsedUrl)
 	
 	originalUrl = siteData.url
+	originalUrlParse = urlparse(originalUrl)
+	
 	siteSoup = BeautifulSoup(siteData.read(), "lxml")
 	pageHead = siteSoup.head
 	pageTitle = siteSoup.title
+	pageText = siteSoup.get_text()
 	imgTagList = siteSoup.select('img[src]')
 	imgLinks = []
 	for img in imgTagList:
-		imgUrl = originalUrl + img['src']
+		if img['src'].find('http') !=0:
+			imgUrl = originalUrlParse.scheme + originalUrlParse.netloc + img['src']
+		else:
+			imgUrl = img['src']
+		print imgUrl
 		if imgUrl not in imgLinks:
 			imgLinks.append(imgUrl)
-	return dict(url=url,originalUrl=originalUrl,title=pageTitle.string, imgList = imgLinks)
+	return dict(url=url,originalUrl=originalUrl,originalProvider=originalUrlParse.netloc,allText=pageText, title=pageTitle.string, imgList = imgLinks)

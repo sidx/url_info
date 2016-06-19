@@ -16,10 +16,12 @@
 					  url: url,
 					  data: data
 					}).done(function(data){
-						console.log(data.url);
+						console.log(data);
 						$('#source').html(data.url);
 						$('#original').html(data.originalUrl);
 						$('#title').html(data.title);
+						$('#domain').html(data.originalProvider);
+						$('#content').html(data.allText);
 						var imageList = '';
 						for(var i=0,maxlen=data.imgList.length;i<maxlen;i++){
 							imageList = imageList + '<li><a href="'+data.imgList[i]+'">'+i.toString()+'</a></li>';
@@ -40,7 +42,9 @@
     <div id='details'>
 		<p id='source'></p>
 		<p id='original'></p>
+		<p id='domain'></p>
 		<p id='title'></p>
 		<ul id='images'></ul>
+		<p id='content'></p>
     </div>
 </html>
